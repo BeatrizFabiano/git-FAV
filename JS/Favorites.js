@@ -15,35 +15,35 @@ export class Favorites {
   }
 
   async add(username) {
-    const validName = username.toUpperCase()
+    const validName = username.toUpperCase();
     username = validName
     console.log(validName);
 
     try {
-      const userExist = this.entries.find(entry => entry.login.toLowerCase() === username.toLowerCase() )
+      const userExist = this.entries.find(entry => entry.login.toLowerCase() === username.toLowerCase())
 
-      if(userExist) {
-        throw new Error ('Usuário já cadastrado!')
+      if (userExist) {
+        throw new Error('Usuário já cadastrado!')
       }
-      
-      const user = await GithubUser.search(username)
 
-      if(user.login === undefined) {
-        throw new Error ('Usuário não encontrado!')
+      const user = await GithubUser.search(username);
+
+      if (user.login === undefined) {
+        throw new Error('Usuário não encontrado!')
       }
 
       this.entries = [user, ...this.entries]
       this.update()
       this.save()
 
-    } catch(error) {
+    } catch (error) {
       alert(error.message)
     }
   }
 
   delete(user) {
     const filtroDeEntradas = this.entries
-      .filter(entry => entry.login !== user.login)
+      .filter(entry => entry.login !== user.login);
 
     this.entries = filtroDeEntradas
     this.update()
@@ -54,33 +54,31 @@ export class Favorites {
 export class FavoritesView extends Favorites {
   constructor(root) {
     super(root)
-    this.tbody =  this.root.querySelector('table tbody')
+    this.tbody = this.root.querySelector('table tbody')
     this.update()
     this.onadd()
   }
 
   onadd() {
-    const addButton = this.root.querySelector('.search button')
-    let input = this.root.querySelector('.search input')
-   
-    addButton.onclick = () => {   
+    const addButton = this.root.querySelector('.search button');
+    let input = this.root.querySelector('.search input');
+
+    addButton.onclick = () => {
       this.add(input.value)
       input.value = ''
     }
 
-   window.onkeydown = (handleKeydown) => {
+    window.onkeydown = (handleKeydown) => {
       if (handleKeydown.key === 'Enter') {
         this.add(input.value)
         input.value = ''
-      } 
+      }
     }
-   
- 
   }
 
   update() {
     this.removeAllTr()
-    
+
     this.entries.forEach(user => {
       const row = this.createRow()
       row.querySelector('.user img').src = `https://github.com/${user.login}.png`
@@ -93,21 +91,21 @@ export class FavoritesView extends Favorites {
 
       row.querySelector('.remove').onclick = () => {
         const canDelete = confirm('Tem certeza que deseja deletar esse usuário?')
-        if(canDelete) {
+        if (canDelete) {
           this.delete(user)
         }
       }
-      this.tbody.append(row) 
-    })
+      this.tbody.append(row)
+    });
   }
 
   removeAllTr() {
-    this.tbody.querySelectorAll('tr').forEach( (tr) => {tr.remove()} );
+    this.tbody.querySelectorAll('tr').forEach((tr) => { tr.remove() });
   }
 
   createRow() {
     const tr = document.createElement('tr')
-    tr.innerHTML =` 
+    tr.innerHTML = ` 
       <td class="user">
         <img src="https://github.com/BeatrizFabiano.png" alt="imagem de BeatrizFabiano">
         <a href="https://github.com/BeatrizFabiano" target="_blank">
@@ -123,6 +121,6 @@ export class FavoritesView extends Favorites {
         </button>
       </td>
   `
-    return tr
+    return tr;
   }
-}
+};
